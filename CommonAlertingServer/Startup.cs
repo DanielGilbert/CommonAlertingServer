@@ -1,3 +1,5 @@
+using CommonAlertingServer.Services.Alerts.Dwd;
+using CommonAlertingServer.Services.Alerts.Dwd.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -25,7 +27,7 @@ namespace CommonAlertingServer
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            services.AddTransient<IDwdAlertService, DwdAlertService>();
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -39,9 +41,10 @@ namespace CommonAlertingServer
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "CommonAlertingServer v1"));
             }
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "CommonAlertingServer v1"));
 
             app.UseRouting();
 
