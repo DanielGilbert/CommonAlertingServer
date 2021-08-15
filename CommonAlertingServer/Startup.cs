@@ -1,5 +1,7 @@
 using CommonAlertingServer.Services.Alerts.Dwd;
 using CommonAlertingServer.Services.Alerts.Dwd.Interfaces;
+using CommonAlertingServer.Services.Helper.Dwd;
+using CommonAlertingServer.Services.Helper.Dwd.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -28,6 +30,7 @@ namespace CommonAlertingServer
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddTransient<IDwdAlertService, DwdAlertService>();
+            services.AddTransient<IDwdHelperService, DwdHelperService>();
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
