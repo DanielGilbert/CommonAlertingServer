@@ -14,6 +14,11 @@ namespace CommonAlertingServer.Models.Helper.Dwd
         [JsonPropertyName("postalCode")]
         public string PostalCode { get; set; }
         /// <summary>
+        /// The place this postal code refers tio
+        /// </summary>
+        [JsonPropertyName("place")]
+        public string Place { get; set; }
+        /// <summary>
         /// The official municipality key for the postal code.
         /// </summary>
         [JsonPropertyName("officialMunicipalityKey")]
@@ -23,6 +28,9 @@ namespace CommonAlertingServer.Models.Helper.Dwd
         /// </summary>
         [JsonPropertyName("warncellId")]
         public string WarncellId { get; set; }
+        /// <summary>
+        /// Propert attributiun for this dataset
+        /// </summary>
         [JsonPropertyName("attribution")]
         public string Attribution { get; set; }
     }
