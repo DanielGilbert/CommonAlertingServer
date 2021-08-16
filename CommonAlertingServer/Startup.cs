@@ -29,8 +29,8 @@ namespace CommonAlertingServer
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddTransient<IDwdAlertService, DwdAlertService>();
-            services.AddTransient<IDwdHelperService, DwdHelperService>();
+            services.AddSingleton<IDwdAlertService, DwdAlertService>();
+            services.AddSingleton<IDwdHelperService, DwdHelperService>();
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {

@@ -33,5 +33,19 @@ namespace CommonAlertingServer.Models.Helper.Dwd
         /// </summary>
         [JsonPropertyName("attribution")]
         public string Attribution { get; set; }
+
+        public DwdPostalcodeHelperResponse(DwdPostalcodeAgs result)
+        {
+            if (result != null)
+            {
+                WarncellId = "8" + result.Ags;
+                OfficialMunicipalityKey = result.Ags;
+                Place = result.Place;
+                PostalCode = result.Postalcode;
+            }
+
+            Attribution = "© OpenStreetMap contributors | https://www.openstreetmap.org/copyright";
+        }
+
     }
 }
