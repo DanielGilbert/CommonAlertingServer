@@ -12,7 +12,7 @@ using System.Xml.Serialization;
 
 namespace CommonAlertingServer.Services.Alerts.Dwd
 {
-    public class DwdAlertCacheService : IDwdAlertCacheService, IHostedService, IDisposable
+    public class DwdAlertCacheService : IDwdAlertCacheService, IDisposable
     {
         private readonly List<DwdAlert> _dwdAlerts;
         private readonly ILogger<DwdAlertCacheService> _logger;
@@ -25,6 +25,7 @@ namespace CommonAlertingServer.Services.Alerts.Dwd
 
         public DwdAlertCacheService(ILogger<DwdAlertCacheService> logger)
         {
+            _dwdAlerts = new List<DwdAlert>();
             _logger = logger;
             dwdNamespace = "http://www.dwd.de";
             wfsNamespace = "http://www.opengis.net/wfs/2.0";
@@ -45,6 +46,7 @@ namespace CommonAlertingServer.Services.Alerts.Dwd
                 try
                 {
                     readonlyDwdAlert = _dwdAlerts.AsReadOnly();
+
                 }
                 finally
                 {
@@ -61,42 +63,54 @@ namespace CommonAlertingServer.Services.Alerts.Dwd
 
         private void FetchDwdData(object state)
         {
-            XDocument xDocument = XDocument.Load("https://maps.dwd.de/geoserver/dwd/ows?service=WFS&request=GetFeature&typeName=dwd:Warnungen_Gemeinden");
+            _logger.LogInformation("Fetching Alerts...");
 
-            var queryResult = xDocument.Descendants(dwdNamespace + "Warnungen_Gemeinden");
-
-            if (Monitor.TryEnter(_dwdAlerts, TimeSpan.FromMinutes(1)))
+            try
             {
-                try
-                {
-                    _dwdAlerts.Clear();
+                XDocument xDocument = XDocument.Load("https://maps.dwd.de/geoserver/dwd/ows?service=WFS&request=GetFeature&typeName=dwd:Warnungen_Gemeinden");
 
-                    foreach (var result in queryResult)
+                var queryResult = xDocument.Descendants(dwdNamespace + "Warnungen_Gemeinden");
+
+                if (Monitor.TryEnter(_dwdAlerts, TimeSpan.FromMinutes(1)))
+                {
+                    try
                     {
-                        try
+                        _dwdAlerts.Clear();
+
+                        _logger.LogInformation($"Got {queryResult.Count()} alert(s)...");
+
+                        foreach (var result in queryResult)
                         {
-                            _dwdAlerts.Add((DwdAlert)dwdAlertSerializer.Deserialize(result.CreateReader()));
-                        }
-                        catch(Exception ex)
-                        {
-                            _logger.LogError("Failed to add alert");
+                            try
+                            {
+                                _dwdAlerts.Add((DwdAlert)dwdAlertSerializer.Deserialize(result.CreateReader()));
+                            }
+                            catch (Exception ex)
+                            {
+                                _logger.LogError("Failed to add alert");
+                            }
                         }
                     }
+                    finally
+                    {
+                        Monitor.Exit(_dwdAlerts);
+                    }
                 }
-                finally
+                else
                 {
-                    Monitor.Exit(_dwdAlerts);
+                    _logger.LogError("Could not lock DwdAlert list");
                 }
             }
-            else
+            catch(Exception ex)
             {
-                _logger.LogError("Could not lock DwdAlert list");
+                _logger.LogError($"Failed to fetch alerts! Error: {ex}");
+
             }
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Timed Hosted Service running.");
+            _logger.LogInformation("Started DwdAlertCacheService.");
 
             _timer = new Timer(FetchDwdData, null, TimeSpan.Zero, TimeSpan.FromMinutes(10));
 
@@ -105,7 +119,9 @@ namespace CommonAlertingServer.Services.Alerts.Dwd
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            _timer.Change(TimeSpan.Zero, TimeSpan.Zero);
+
+            return Task.CompletedTask;
         }
     }
 }

@@ -31,9 +31,7 @@ namespace CommonAlertingServer.Services.Alerts.Dwd
 
         public IList<DwdAlert> GetAlerts(int limit, int page)
         {
-            var getResultList = new List<DwdAlert>();
-
-            var resultAlerts = _dwdAlertCacheService.GetDwdAlerts();
+            IReadOnlyList<DwdAlert> resultAlerts = _dwdAlertCacheService.GetDwdAlerts();
 
             return resultAlerts.Skip(page * limit - limit).Take(limit).ToList();
         }
@@ -44,13 +42,11 @@ namespace CommonAlertingServer.Services.Alerts.Dwd
 
             _logger.LogDebug($"Retrieving all alerts for {warncellId}");
 
-            XDocument xDocument = XDocument.Load("https://maps.dwd.de/geoserver/dwd/ows?service=WFS&request=GetFeature&typeName=dwd:Warnungen_Gemeinden");
+            IReadOnlyList<DwdAlert> resultAlerts = _dwdAlertCacheService.GetDwdAlerts();
 
-            var queryResult = xDocument.Descendants(dwdNamespace + "Warnungen_Gemeinden").Where(p => p.Descendants(dwdNamespace + "WARNCELLID").FirstOrDefault().Value.Contains(warncellId)).Skip(page * limit - limit).Take(limit);
-
-            foreach (var result in queryResult)
+            foreach (var result in resultAlerts.Where(p => p.WarnCellId.Contains(warncellId)).Skip(page * limit - limit).Take(limit).AsEnumerable())
             {
-                getResultList.Add((DwdAlert)dwdAlertSerializer.Deserialize(result.CreateReader()));
+                getResultList.Add(result);
             }
 
             _logger.LogDebug("Retrieving all alerts");

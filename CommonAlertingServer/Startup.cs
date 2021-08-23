@@ -29,7 +29,8 @@ namespace CommonAlertingServer
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddHostedService<IDwdAlertCacheService, DwdAlertCacheService>();
+            services.AddSingleton<IDwdAlertCacheService, DwdAlertCacheService>();
+            services.AddHostedService(services => (DwdAlertCacheService)services.GetService<IDwdAlertCacheService>());
             services.AddSingleton<IDwdAlertService, DwdAlertService>();
             services.AddSingleton<IDwdHelperService, DwdHelperService>();
             services.AddControllers();
