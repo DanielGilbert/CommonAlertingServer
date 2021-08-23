@@ -12,7 +12,7 @@ namespace CommonAlertingServer.Services.Alerts.Dwd.Interfaces
         /// Will return all available alerts
         /// </summary>
         /// <returns>A list of all alerts</returns>
-        List<DwdAlert> GetAlerts(int limit, int page);
+        IList<DwdAlert> GetAlerts(int limit, int page);
         /// <summary>
         /// Gets all alerts for a given warncellId
         /// </summary>
