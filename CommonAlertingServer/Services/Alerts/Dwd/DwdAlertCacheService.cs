@@ -112,7 +112,7 @@ namespace CommonAlertingServer.Services.Alerts.Dwd
         {
             _logger.LogInformation("Started DwdAlertCacheService.");
 
-            _timer = new Timer(FetchDwdData, null, TimeSpan.Zero, TimeSpan.FromMinutes(10));
+            _timer = new Timer(FetchDwdData, null, TimeSpan.Zero, TimeSpan.FromMinutes(5));
 
             return Task.CompletedTask;
         }
