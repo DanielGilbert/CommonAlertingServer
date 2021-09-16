@@ -9,7 +9,7 @@ namespace CommonAlertingServer.Models.Alerts.Dwd
 {
 	[XmlRoot(ElementName = "Warnungen_Gemeinden", Namespace = "http://www.dwd.de")]
 	public class DwdAlert
-    {
+	{
 		[JsonPropertyName("areaDesc")]
 		[XmlElement(ElementName = "AREADESC", Namespace = "http://www.dwd.de")]
 		public string AreaDesc { get; set; }
