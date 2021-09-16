@@ -37,6 +37,7 @@ namespace CommonAlertingServer
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "CommonAlertingServer", Version = "v1" });
+                c.EnableAnnotations();
             });
         }
 
@@ -49,7 +50,11 @@ namespace CommonAlertingServer
             }
 
             app.UseSwagger();
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "CommonAlertingServer v1"));
+            app.UseSwaggerUI(c => {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "CommonAlertingServer v1");
+                c.EnableFilter();
+                c.EnableDeepLinking();
+            });
 
             app.UseRouting();
 
