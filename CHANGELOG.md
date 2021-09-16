@@ -4,9 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.1.3] - 2012-09-10
+## [0.1.4] - UNRELEASED
+### Added
+- Detailed annotations for Swagger
 ### Changed
+- Automatic fetching of DWD warnings every 5 minutes
+
+## [0.1.3] - 2012-09-10
 - Sets automatic fetching intervall for DWD warnings to 5 minutes
+### Changed
 
 ## [0.1.2] - 2021-08-23
 ### Added
