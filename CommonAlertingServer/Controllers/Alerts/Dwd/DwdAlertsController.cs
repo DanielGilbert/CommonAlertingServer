@@ -32,12 +32,14 @@ namespace CommonAlertingServer.Controllers.Dwd
         [HttpGet]
         public ActionResult<IList<DwdAlert>> Get([FromQuery] UrlQueryParameters urlQueryParameters)
         {
+            _logger.LogDebug("Fetching alerts.");
             return Ok(_dwdAlertService.GetAlerts(urlQueryParameters.Limit, urlQueryParameters.Page));
         }
 
         [HttpGet("warncellids/{warncellid}")]
         public ActionResult<IList<DwdAlert>> Get(string warncellid, [FromQuery] UrlQueryParameters urlQueryParameters)
         {
+            _logger.LogDebug($"Fetching alert for {warncellid}.");
             return Ok(_dwdAlertService.GetAlertsFor(warncellid, urlQueryParameters.Limit, urlQueryParameters.Page));
         }
     }

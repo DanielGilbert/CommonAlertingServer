@@ -16,17 +16,11 @@ namespace CommonAlertingServer.Services.Alerts.Dwd
     {
         private readonly ILogger<DwdAlertService> _logger;
         private readonly IDwdAlertCacheService _dwdAlertCacheService;
-        private readonly XNamespace dwdNamespace;
-        private readonly XNamespace wfsNamespace;
-        private readonly XmlSerializer dwdAlertSerializer;
 
         public DwdAlertService(ILogger<DwdAlertService> logger, IDwdAlertCacheService dwdAlertCacheService)
         {
             _logger = logger;
             _dwdAlertCacheService = dwdAlertCacheService;
-            dwdNamespace = "http://www.dwd.de";
-            wfsNamespace = "http://www.opengis.net/wfs/2.0";
-            dwdAlertSerializer = new XmlSerializer(typeof(DwdAlert));
         }
 
         public IList<DwdAlert> GetAlerts(int limit, int page)

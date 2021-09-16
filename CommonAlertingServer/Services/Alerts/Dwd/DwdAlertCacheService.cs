@@ -12,15 +12,13 @@ using System.Xml.Serialization;
 
 namespace CommonAlertingServer.Services.Alerts.Dwd
 {
-    public class DwdAlertCacheService : IDwdAlertCacheService, IDisposable
+    public class DwdAlertCacheService : IDwdAlertCacheService
     {
         private readonly List<DwdAlert> _dwdAlerts;
         private readonly ILogger<DwdAlertCacheService> _logger;
         private readonly XmlSerializer dwdAlertSerializer;
         private readonly XNamespace dwdNamespace;
-        private readonly XNamespace wfsNamespace;
         private Timer _timer;
-        private int executionCount = 0;
 
 
         public DwdAlertCacheService(ILogger<DwdAlertCacheService> logger)
@@ -28,13 +26,7 @@ namespace CommonAlertingServer.Services.Alerts.Dwd
             _dwdAlerts = new List<DwdAlert>();
             _logger = logger;
             dwdNamespace = "http://www.dwd.de";
-            wfsNamespace = "http://www.opengis.net/wfs/2.0";
             dwdAlertSerializer = new XmlSerializer(typeof(DwdAlert));
-        }
-
-        public void Dispose()
-        {
-            throw new NotImplementedException();
         }
 
         public IReadOnlyList<DwdAlert> GetDwdAlerts()
@@ -87,7 +79,7 @@ namespace CommonAlertingServer.Services.Alerts.Dwd
                             }
                             catch (Exception ex)
                             {
-                                _logger.LogError("Failed to add alert");
+                                _logger.LogError(ex, "Failed to add alert");
                             }
                         }
                     }

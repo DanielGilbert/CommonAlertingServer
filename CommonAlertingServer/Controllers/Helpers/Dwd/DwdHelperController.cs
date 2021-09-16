@@ -26,6 +26,7 @@ namespace CommonAlertingServer.Controllers.Helpers.Dwd
         [HttpGet("postalcode/{postalcode}")]
         public ActionResult<DwdPostalcodeHelperResponse> Get(string postalcode)
         {
+            _logger.LogInformation($"Looking up {postalcode}");
             return Ok(_dwdHelperService.GetDwdPostalCodeHelperResponse(postalcode));
         }
     }
