@@ -36,7 +36,25 @@ namespace CommonAlertingServer
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "CommonAlertingServer", Version = "v1" });
+                c.SwaggerDoc("v1",
+                    new OpenApiInfo
+                    {
+                        Title = "Common Alerting Server (CAS)",
+                        Version = "v1",
+                        Description = "This API enables multiple CAP services to be queried, and will return the results as JSON-formatted data. Currently, only the DWD warnings have been implemented, but more endpoints are planned soon.",
+                        TermsOfService = new Uri("https://warnthingy.com/terms"),
+                        Contact = new OpenApiContact
+                        {
+                            Name = "Daniel Gilbert",
+                            Url = new Uri("https://g5t.de")
+                        },
+                        License = new OpenApiLicense
+                        {
+                            Name = "Multiple licenses apply.",
+                            Url = new Uri("https://warnthingy.com/terms")
+                        }
+                    });
+                c.EnableAnnotations();
             });
         }
 
@@ -49,7 +67,11 @@ namespace CommonAlertingServer
             }
 
             app.UseSwagger();
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "CommonAlertingServer v1"));
+            app.UseSwaggerUI(c => {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Common Alerting Server v1");
+                c.EnableFilter();
+                c.EnableDeepLinking();
+            });
 
             app.UseRouting();
 

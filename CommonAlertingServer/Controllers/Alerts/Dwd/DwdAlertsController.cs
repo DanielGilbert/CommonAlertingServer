@@ -2,6 +2,7 @@
 using CommonAlertingServer.Services.Alerts.Dwd.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,14 +31,31 @@ namespace CommonAlertingServer.Controllers.Dwd
         }
 
         [HttpGet]
+        [SwaggerOperation(
+            Summary = "Retrieves all warnings issued from the DWD",
+            Description = "This route will return all active warnings. The warnings are currently being refreshed every 5 minutes.",
+            OperationId = "GetWarnings",
+            Tags = new[] { "/alerts/dwd" }
+        )]
+        [SwaggerResponse(200, "All available warnings issued by the DWD.", typeof(List<DwdAlert>))]
         public ActionResult<IList<DwdAlert>> Get([FromQuery] UrlQueryParameters urlQueryParameters)
         {
+            _logger.LogDebug("Fetching alerts.");
             return Ok(_dwdAlertService.GetAlerts(urlQueryParameters.Limit, urlQueryParameters.Page));
         }
 
+
         [HttpGet("warncellids/{warncellid}")]
+        [SwaggerOperation(
+            Summary = "Retrieves a warning for a given warncellid",
+            Description = "This route will return all active warnings for the given warncellid. The warnings are currently being refreshed every 5 minutes.",
+            OperationId = "GetWarncellIdWarning",
+            Tags = new[] { "/alerts/dwd" }
+        )]
+        [SwaggerResponse(200, "All available warnings for this warncellid", typeof(List<DwdAlert>))]
         public ActionResult<IList<DwdAlert>> Get(string warncellid, [FromQuery] UrlQueryParameters urlQueryParameters)
         {
+            _logger.LogDebug($"Fetching alert for {warncellid}.");
             return Ok(_dwdAlertService.GetAlertsFor(warncellid, urlQueryParameters.Limit, urlQueryParameters.Page));
         }
     }
