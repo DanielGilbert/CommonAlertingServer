@@ -63,10 +63,12 @@ namespace CommonAlertingServer.Services.Alerts.Dwd
 
                 var queryResult = xDocument.Descendants(dwdNamespace + "Warnungen_Gemeinden");
 
-                if (Monitor.TryEnter(_dwdAlerts, TimeSpan.FromMinutes(1)))
+                if (Monitor.TryEnter(_dwdAlerts, TimeSpan.FromMinutes(2)))
                 {
                     try
                     {
+                        List<DwdAlert> _temporaryAlerts = new List<DwdAlert>();
+
                         _dwdAlerts.Clear();
 
                         _logger.LogInformation($"Got {queryResult.Count()} alert(s)...");
@@ -75,13 +77,31 @@ namespace CommonAlertingServer.Services.Alerts.Dwd
                         {
                             try
                             {
-                                _dwdAlerts.Add((DwdAlert)dwdAlertSerializer.Deserialize(result.CreateReader()));
+                                _temporaryAlerts.Add((DwdAlert)dwdAlertSerializer.Deserialize(result.CreateReader()));
                             }
                             catch (Exception ex)
                             {
-                                _logger.LogError(ex, "Failed to add alert");
+                                _logger.LogError(ex, "Failed to deserialize alert");
                             }
                         }
+
+                        try
+                        {
+                            //Sort alerts by date and warncellid
+                            foreach (var result in _temporaryAlerts.OrderBy((p) => p.WarnCellId)
+                                                                  .OrderByDescending((p) => p.Severity)
+                                                                  .OrderByDescending((p) => p.OnSet))
+                            {
+                                if (result.Status == AlertStatus.Test) continue;
+
+                                _dwdAlerts.Add(result);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.LogError(ex, "Failed to sort alerts");
+                        }
+
                     }
                     finally
                     {
