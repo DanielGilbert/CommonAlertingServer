@@ -7,6 +7,60 @@ using System.Xml.Serialization;
 
 namespace CommonAlertingServer.Models.Alerts.Dwd
 {
+	public enum Severity
+	{
+		[XmlEnum("Minor")]
+		Minor = 0,
+		[XmlEnum("Moderate")]
+		Moderate = 1,
+		[XmlEnum("Severe")]
+		Severe = 2,
+		[XmlEnum("Extreme")]
+		Extreme = 3
+	}
+
+	public enum Urgency
+	{
+		[XmlEnum("Immediate")]
+		Immediate = 0,
+		[XmlEnum("Future")]
+		Future = 1
+	}
+
+	public enum Category
+    {
+		[XmlEnum("Met")]
+		Met = 0,
+		[XmlEnum("Health")]
+		Health = 1
+	}
+
+	public enum AlertStatus
+	{
+		[XmlEnum("Actual")]
+		Actual = 0,
+		[XmlEnum("Test")]
+		Test = 1
+	}
+
+	public enum MsgType
+    {
+		[XmlEnum("Alert")]
+		Alert = 0,
+		[XmlEnum("Update")]
+		Update = 1,
+		[XmlEnum("Cancel")]
+		Cancel = 2
+	}
+
+	public enum Certainty
+	{
+		[XmlEnum("Observed")]
+		Observed = 0,
+		[XmlEnum("Likely")]
+		Likely = 1
+	}
+
 	[XmlRoot(ElementName = "Warnungen_Gemeinden", Namespace = "http://www.dwd.de")]
 	public class DwdAlert
 	{
@@ -32,15 +86,17 @@ namespace CommonAlertingServer.Models.Alerts.Dwd
 
 		[JsonPropertyName("sent")]
 		[XmlElement(ElementName = "SENT", Namespace = "http://www.dwd.de")]
-		public string Sent { get; set; }
+		public DateTime? Sent { get; set; }
 
 		[JsonPropertyName("status")]
+		[JsonConverter(typeof(JsonStringEnumConverter))]
 		[XmlElement(ElementName = "STATUS", Namespace = "http://www.dwd.de")]
-		public string Status { get; set; }
+		public AlertStatus? Status { get; set; }
 
 		[JsonPropertyName("msgType")]
+		[JsonConverter(typeof(JsonStringEnumConverter))]
 		[XmlElement(ElementName = "MSGTYPE", Namespace = "http://www.dwd.de")]
-		public string MsgType { get; set; }
+		public MsgType? MsgType { get; set; }
 
 		[JsonPropertyName("source")]
 		[XmlElement(ElementName = "SOURCE", Namespace = "http://www.dwd.de")]
@@ -59,8 +115,9 @@ namespace CommonAlertingServer.Models.Alerts.Dwd
 		public string Language { get; set; }
 
 		[JsonPropertyName("category")]
+		[JsonConverter(typeof(JsonStringEnumConverter))]
 		[XmlElement(ElementName = "CATEGORY", Namespace = "http://www.dwd.de")]
-		public string Category { get; set; }
+		public Category? Category { get; set; }
 
 		[JsonPropertyName("event")]
 		[XmlElement(ElementName = "EVENT", Namespace = "http://www.dwd.de")]
@@ -71,16 +128,19 @@ namespace CommonAlertingServer.Models.Alerts.Dwd
 		public string ResponseType { get; set; }
 
 		[JsonPropertyName("urgency")]
+		[JsonConverter(typeof(JsonStringEnumConverter))]
 		[XmlElement(ElementName = "URGENCY", Namespace = "http://www.dwd.de")]
-		public string Urgency { get; set; }
+		public Urgency? Urgency { get; set; }
 
 		[JsonPropertyName("severity")]
+		[JsonConverter(typeof(JsonStringEnumConverter))]
 		[XmlElement(ElementName = "SEVERITY", Namespace = "http://www.dwd.de")]
-		public string Severity { get; set; }
+		public Severity? Severity { get; set; }
 
 		[JsonPropertyName("certainty")]
+		[JsonConverter(typeof(JsonStringEnumConverter))]
 		[XmlElement(ElementName = "CERTAINTY", Namespace = "http://www.dwd.de")]
-		public string Certainty { get; set; }
+		public Certainty? Certainty { get; set; }
 
 		[JsonPropertyName("effective")]
 		[XmlElement(ElementName = "EFFECTIVE", Namespace = "http://www.dwd.de")]
@@ -88,11 +148,11 @@ namespace CommonAlertingServer.Models.Alerts.Dwd
 
 		[JsonPropertyName("onSet")]
 		[XmlElement(ElementName = "ONSET", Namespace = "http://www.dwd.de")]
-		public string OnSet { get; set; }
+		public DateTime? OnSet { get; set; }
 
 		[JsonPropertyName("expires")]
 		[XmlElement(ElementName = "EXPIRES", Namespace = "http://www.dwd.de")]
-		public string Expires { get; set; }
+		public DateTime? Expires { get; set; }
 
 		[JsonPropertyName("senderName")]
 		[XmlElement(ElementName = "SENDERNAME", Namespace = "http://www.dwd.de")]
